@@ -1,0 +1,38 @@
+environment:
+  matrix:
+  - PYTHON: Python27
+  - PYTHON: Python33
+  - PYTHON: Python34
+  - PYTHON: Python35
+  - PYTHON: Python36
+
+install:
+- SET PATH=C:\\%PYTHON%;C:\\%PYTHON%\\Scripts;%PATH%
+- python --version
+- pip install cython
+- pip install nose
+- ps: |
+    rm alias:curl
+    if (-not (Test-Path download/djvulibre-installer.exe)) {
+      md -Force tmp
+      curl -fsSL --connect-timeout 10 -o tmp\djvulibre-installer.exe (cat .appveyor.url -First 1)
+    }
+- ps: |
+    md -Force download
+    if (-not (Test-Path download/djvulibre-installer.exe)) {
+      cp tmp\djvulibre-installer.exe download
+    }
+- START /WAIT download\djvulibre-installer /S
+
+build_script:
+- python setup.py build_ext --inplace
+
+test_script:
+- SET "PATH=%PATH%;C:\Program Files (x86)\DjVuLibre"
+- python -m nose -v
+
+cache:
+- C:\Users\appveyor\AppData\Local\pip
+- download -> .appveyor.url
+
+# vim:ts=2 sts=2 sw=2 et
