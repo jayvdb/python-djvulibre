@@ -7,10 +7,10 @@ environment:
   - PYTHON: Python36
 
 install:
-- SET PATH=C:\\%PYTHON%;C:\\%PYTHON%\\Scripts;%PATH%
+- SET PATH=C:\\%PYTHON%;%PATH%
 - python --version
-- pip install cython
-- pip install nose
+- python -m pip install cython
+- python -m pip install nose
 - ps: |
     rm alias:curl
     if (-not (Test-Path download/djvulibre-installer.exe)) {
